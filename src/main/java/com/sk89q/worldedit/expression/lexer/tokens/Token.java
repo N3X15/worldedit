@@ -15,7 +15,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 package com.sk89q.worldedit.expression.lexer.tokens;
 
@@ -23,17 +23,16 @@ import com.sk89q.worldedit.expression.Identifiable;
 
 /**
  * A token. The lexer generates these to make the parser's job easier.
- *
+ * 
  * @author TomyLobo
  */
 public abstract class Token implements Identifiable {
     private final int position;
-
+    
     public Token(int position) {
         this.position = position;
     }
-
-    @Override
+    
     public int getPosition() {
         return position;
     }

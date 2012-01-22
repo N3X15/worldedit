@@ -25,22 +25,22 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 /**
-* @author zml2008
-*/
+ * @author zml2008
+ */
 public class FallbackRegistrationListener implements Listener {
-
+    
     private final CommandMap commandRegistration;
-
+    
     public FallbackRegistrationListener(CommandMap commandRegistration) {
         this.commandRegistration = commandRegistration;
     }
-
-    @EventHandler
+    
+    @EventHandler(event = PlayerCommandPreprocessEvent.class)
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
         if (event.isCancelled()) {
             return;
         }
-
+        
         if (commandRegistration.dispatch(event.getPlayer(), event.getMessage())) {
             event.setCancelled(true);
         }

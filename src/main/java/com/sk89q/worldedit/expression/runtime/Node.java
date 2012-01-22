@@ -15,30 +15,29 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 package com.sk89q.worldedit.expression.runtime;
 
 /**
  * A node in the execution tree of an expression.
- *
+ * 
  * @author TomyLobo
  */
 public abstract class Node implements RValue {
     private final int position;
-
+    
     public Node(int position) {
         this.position = position;
     }
-
+    
     @Override
     public abstract String toString();
-
+    
     public RValue optimize() throws EvaluationException {
         return this;
     }
-
-    @Override
+    
     public final int getPosition() {
         return position;
     }

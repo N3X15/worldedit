@@ -15,28 +15,27 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 package com.sk89q.worldedit.expression.lexer.tokens;
 
 /**
  * A unary or binary operator.
- *
+ * 
  * @author TomyLobo
  */
 public class OperatorToken extends Token {
     public final String operator;
-
+    
     public OperatorToken(int position, String operator) {
         super(position);
         this.operator = operator;
     }
-
-    @Override
+    
     public char id() {
         return 'o';
     }
-
+    
     @Override
     public String toString() {
         return "OperatorToken(" + operator + ")";

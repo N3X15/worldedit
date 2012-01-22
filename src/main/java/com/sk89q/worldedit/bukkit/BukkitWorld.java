@@ -15,18 +15,24 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 package com.sk89q.worldedit.bukkit;
+
+import gnu.trove.procedure.TIntIntProcedure;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import gnu.trove.procedure.TIntIntProcedure;
+import org.bukkit.Effect;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.TreeType;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.block.Furnace;
 import org.bukkit.block.CreatureSpawner;
+import org.bukkit.block.Furnace;
 import org.bukkit.block.Sign;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Animals;
@@ -43,24 +49,25 @@ import org.bukkit.entity.TNTPrimed;
 import org.bukkit.entity.Tameable;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.Effect;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.TreeType;
-import org.bukkit.World;
 
 import com.sk89q.worldedit.BlockVector2D;
 import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.EntityType;
 import com.sk89q.worldedit.LocalWorld;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.Vector2D;
-import com.sk89q.worldedit.blocks.*;
-import com.sk89q.worldedit.EntityType;
+import com.sk89q.worldedit.blocks.BaseBlock;
+import com.sk89q.worldedit.blocks.BaseItemStack;
+import com.sk89q.worldedit.blocks.ContainerBlock;
+import com.sk89q.worldedit.blocks.FurnaceBlock;
+import com.sk89q.worldedit.blocks.MobSpawnerBlock;
+import com.sk89q.worldedit.blocks.NoteBlock;
+import com.sk89q.worldedit.blocks.SignBlock;
 import com.sk89q.worldedit.regions.Region;
 
 public class BukkitWorld extends LocalWorld {
-    private World world;
-
+    private final World world;
+    
     /**
      * Construct the object.
      * @param world
@@ -68,7 +75,7 @@ public class BukkitWorld extends LocalWorld {
     public BukkitWorld(World world) {
         this.world = world;
     }
-
+    
     /**
      * Get the world handle.
      * 
@@ -77,7 +84,7 @@ public class BukkitWorld extends LocalWorld {
     public World getWorld() {
         return world;
     }
-
+    
     /**
      * Get the name of the world
      * 
@@ -87,7 +94,7 @@ public class BukkitWorld extends LocalWorld {
     public String getName() {
         return world.getName();
     }
-
+    
     /**
      * Set block type.
      * 
@@ -99,7 +106,7 @@ public class BukkitWorld extends LocalWorld {
     public boolean setBlockType(Vector pt, int type) {
         return world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ()).setTypeId(type);
     }
-
+    
     /**
      * Set block type.
      * 
@@ -111,31 +118,31 @@ public class BukkitWorld extends LocalWorld {
     public boolean setBlockTypeFast(Vector pt, int type) {
         return world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ()).setTypeId(type, false);
     }
-
+    
     /**
      * set block type & data
      * @param pt
      * @param type
      * @param data
-     * @return 
+     * @return
      */
     @Override
     public boolean setTypeIdAndData(Vector pt, int type, int data) {
         return world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ()).setTypeIdAndData(type, (byte) data, true);
     }
-
+    
     /**
      * set block type & data
      * @param pt
      * @param type
      * @param data
-     * @return 
+     * @return
      */
     @Override
     public boolean setTypeIdAndDataFast(Vector pt, int type, int data) {
         return world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ()).setTypeIdAndData(type, (byte) data, false);
     }
-
+    
     /**
      * Get block type.
      * 
@@ -146,7 +153,7 @@ public class BukkitWorld extends LocalWorld {
     public int getBlockType(Vector pt) {
         return world.getBlockTypeIdAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ());
     }
-
+    
     /**
      * Set block data.
      * 
@@ -157,7 +164,7 @@ public class BukkitWorld extends LocalWorld {
     public void setBlockData(Vector pt, int data) {
         world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ()).setData((byte) data);
     }
-
+    
     /**
      * Set block data.
      * 
@@ -168,7 +175,7 @@ public class BukkitWorld extends LocalWorld {
     public void setBlockDataFast(Vector pt, int data) {
         world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ()).setData((byte) data, false);
     }
-
+    
     /**
      * Get block data.
      * 
@@ -179,7 +186,7 @@ public class BukkitWorld extends LocalWorld {
     public int getBlockData(Vector pt) {
         return world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ()).getData();
     }
-
+    
     /**
      * Get block light level.
      * 
@@ -190,7 +197,7 @@ public class BukkitWorld extends LocalWorld {
     public int getBlockLightLevel(Vector pt) {
         return world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ()).getLightLevel();
     }
-
+    
     /**
      * Regenerate an area.
      * 
@@ -201,10 +208,10 @@ public class BukkitWorld extends LocalWorld {
     @Override
     public boolean regenerate(Region region, EditSession editSession) {
         BaseBlock[] history = new BaseBlock[16 * 16 * (getMaxY() + 1)];
-
+        
         for (Vector2D chunk : region.getChunks()) {
             Vector min = new Vector(chunk.getBlockX() * 16, 0, chunk.getBlockZ() * 16);
-
+            
             // First save all the blocks inside
             for (int x = 0; x < 16; ++x) {
                 for (int y = 0; y < (getMaxY() + 1); ++y) {
@@ -215,35 +222,34 @@ public class BukkitWorld extends LocalWorld {
                     }
                 }
             }
-
+            
             try {
                 world.regenerateChunk(chunk.getBlockX(), chunk.getBlockZ());
             } catch (Throwable t) {
                 t.printStackTrace();
             }
-
+            
             // Then restore 
             for (int x = 0; x < 16; ++x) {
                 for (int y = 0; y < (getMaxY() + 1); ++y) {
                     for (int z = 0; z < 16; ++z) {
                         Vector pt = min.add(x, y, z);
                         int index = y * 16 * 16 + z * 16 + x;
-
+                        
                         // We have to restore the block if it was outside
                         if (!region.contains(pt)) {
                             editSession.smartSetBlock(pt, history[index]);
                         } else { // Otherwise fool with history
-                            editSession.rememberChange(pt, history[index],
-                                    editSession.rawGetBlock(pt));
+                            editSession.rememberChange(pt, history[index], editSession.rawGetBlock(pt));
                         }
                     }
                 }
             }
         }
-
+        
         return true;
     }
-
+    
     /**
      * Attempts to accurately copy a BaseBlock's extra data to the world.
      * 
@@ -258,53 +264,59 @@ public class BukkitWorld extends LocalWorld {
             setSignText(pt, ((SignBlock) block).getText());
             return true;
         }
-
+        
         if (block instanceof FurnaceBlock) {
             // Furnaces
             Block bukkitBlock = world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ());
-            if (bukkitBlock == null) return false;
+            if (bukkitBlock == null)
+                return false;
             BlockState state = bukkitBlock.getState();
-            if (!(state instanceof Furnace)) return false;
+            if (!(state instanceof Furnace))
+                return false;
             Furnace bukkit = (Furnace) state;
             FurnaceBlock we = (FurnaceBlock) block;
             bukkit.setBurnTime(we.getBurnTime());
             bukkit.setCookTime(we.getCookTime());
             return setContainerBlockContents(pt, ((ContainerBlock) block).getItems());
         }
-
+        
         if (block instanceof ContainerBlock) {
             // Chests/dispenser
             return setContainerBlockContents(pt, ((ContainerBlock) block).getItems());
         }
-
+        
         if (block instanceof MobSpawnerBlock) {
             // Mob spawners
             Block bukkitBlock = world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ());
-            if (bukkitBlock == null) return false;
+            if (bukkitBlock == null)
+                return false;
             BlockState state = bukkitBlock.getState();
-            if (!(state instanceof CreatureSpawner)) return false;
+            if (!(state instanceof CreatureSpawner))
+                return false;
             CreatureSpawner bukkit = (CreatureSpawner) state;
             MobSpawnerBlock we = (MobSpawnerBlock) block;
             bukkit.setCreatureTypeId(we.getMobType());
             bukkit.setDelay(we.getDelay());
             return true;
         }
-
+        
         if (block instanceof NoteBlock) {
             // Note block
             Block bukkitBlock = world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ());
-            if (bukkitBlock == null) return false;
+            if (bukkitBlock == null)
+                return false;
             BlockState state = bukkitBlock.getState();
-            if (!(state instanceof org.bukkit.block.NoteBlock)) return false;
+            if (!(state instanceof org.bukkit.block.NoteBlock))
+                return false;
             org.bukkit.block.NoteBlock bukkit = (org.bukkit.block.NoteBlock) state;
             NoteBlock we = (NoteBlock) block;
             bukkit.setRawNote(we.getNote());
             return true;
         }
-
+        
         return false;
     }
-
+    
     /**
      * Attempts to read a BaseBlock's extra data from the world.
      * 
@@ -319,13 +331,15 @@ public class BukkitWorld extends LocalWorld {
             ((SignBlock) block).setText(getSignText(pt));
             return true;
         }
-
+        
         if (block instanceof FurnaceBlock) {
             // Furnaces
             Block bukkitBlock = world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ());
-            if (bukkitBlock == null) return false;
+            if (bukkitBlock == null)
+                return false;
             BlockState state = bukkitBlock.getState();
-            if (!(state instanceof Furnace)) return false;
+            if (!(state instanceof Furnace))
+                return false;
             Furnace bukkit = (Furnace) state;
             FurnaceBlock we = (FurnaceBlock) block;
             we.setBurnTime(bukkit.getBurnTime());
@@ -333,40 +347,44 @@ public class BukkitWorld extends LocalWorld {
             ((ContainerBlock) block).setItems(getContainerBlockContents(pt));
             return true;
         }
-
+        
         if (block instanceof ContainerBlock) {
             // Chests/dispenser
             ((ContainerBlock) block).setItems(getContainerBlockContents(pt));
             return true;
         }
-
+        
         if (block instanceof MobSpawnerBlock) {
             // Mob spawners
             Block bukkitBlock = world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ());
-            if (bukkitBlock == null) return false;
+            if (bukkitBlock == null)
+                return false;
             BlockState state = bukkitBlock.getState();
-            if (!(state instanceof CreatureSpawner)) return false;
+            if (!(state instanceof CreatureSpawner))
+                return false;
             CreatureSpawner bukkit = (CreatureSpawner) state;
             MobSpawnerBlock we = (MobSpawnerBlock) block;
             we.setMobType(bukkit.getCreatureTypeId());
             we.setDelay((short) bukkit.getDelay());
             return true;
         }
-
+        
         if (block instanceof NoteBlock) {
             // Note block
             Block bukkitBlock = world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ());
-            if (bukkitBlock == null) return false;
+            if (bukkitBlock == null)
+                return false;
             BlockState state = bukkitBlock.getState();
-            if (!(state instanceof org.bukkit.block.NoteBlock)) return false;
+            if (!(state instanceof org.bukkit.block.NoteBlock))
+                return false;
             org.bukkit.block.NoteBlock bukkit = (org.bukkit.block.NoteBlock) state;
             NoteBlock we = (NoteBlock) block;
             we.setNote(bukkit.getRawNote());
         }
-
+        
         return false;
     }
-
+    
     /**
      * Clear a chest's contents.
      * 
@@ -382,13 +400,13 @@ public class BukkitWorld extends LocalWorld {
         if (!(state instanceof org.bukkit.block.ContainerBlock)) {
             return false;
         }
-
+        
         org.bukkit.block.ContainerBlock chest = (org.bukkit.block.ContainerBlock) state;
         Inventory inven = chest.getInventory();
         inven.clear();
         return true;
     }
-
+    
     /**
      * Generate a tree at a location.
      * 
@@ -397,10 +415,9 @@ public class BukkitWorld extends LocalWorld {
      */
     @Override
     public boolean generateTree(EditSession editSession, Vector pt) {
-        return world.generateTree(BukkitUtil.toLocation(world, pt), TreeType.TREE,
-                new EditSessionBlockChangeDelegate(editSession));
+        return world.generateTree(BukkitUtil.toLocation(world, pt), TreeType.TREE, new EditSessionBlockChangeDelegate(editSession));
     }
-
+    
     /**
      * Generate a big tree at a location.
      * 
@@ -409,10 +426,9 @@ public class BukkitWorld extends LocalWorld {
      */
     @Override
     public boolean generateBigTree(EditSession editSession, Vector pt) {
-        return world.generateTree(BukkitUtil.toLocation(world, pt), TreeType.BIG_TREE,
-                new EditSessionBlockChangeDelegate(editSession));
+        return world.generateTree(BukkitUtil.toLocation(world, pt), TreeType.BIG_TREE, new EditSessionBlockChangeDelegate(editSession));
     }
-
+    
     /**
      * Generate a birch tree at a location.
      * 
@@ -421,10 +437,9 @@ public class BukkitWorld extends LocalWorld {
      */
     @Override
     public boolean generateBirchTree(EditSession editSession, Vector pt) {
-        return world.generateTree(BukkitUtil.toLocation(world, pt), TreeType.BIRCH,
-                new EditSessionBlockChangeDelegate(editSession));
+        return world.generateTree(BukkitUtil.toLocation(world, pt), TreeType.BIRCH, new EditSessionBlockChangeDelegate(editSession));
     }
-
+    
     /**
      * Generate a redwood tree at a location.
      * 
@@ -433,10 +448,9 @@ public class BukkitWorld extends LocalWorld {
      */
     @Override
     public boolean generateRedwoodTree(EditSession editSession, Vector pt) {
-        return world.generateTree(BukkitUtil.toLocation(world, pt), TreeType.REDWOOD,
-                new EditSessionBlockChangeDelegate(editSession));
+        return world.generateTree(BukkitUtil.toLocation(world, pt), TreeType.REDWOOD, new EditSessionBlockChangeDelegate(editSession));
     }
-
+    
     /**
      * Generate a redwood tree at a location.
      * 
@@ -445,23 +459,21 @@ public class BukkitWorld extends LocalWorld {
      */
     @Override
     public boolean generateTallRedwoodTree(EditSession editSession, Vector pt) {
-        return world.generateTree(BukkitUtil.toLocation(world, pt), TreeType.TALL_REDWOOD,
-                new EditSessionBlockChangeDelegate(editSession));
+        return world.generateTree(BukkitUtil.toLocation(world, pt), TreeType.TALL_REDWOOD, new EditSessionBlockChangeDelegate(editSession));
     }
-
+    
     /**
      * Drop an item.
-     *
+     * 
      * @param pt
      * @param item
      */
     @Override
     public void dropItem(Vector pt, BaseItemStack item) {
-        ItemStack bukkitItem = new ItemStack(item.getType(), item.getAmount(),
-                item.getDamage());
+        ItemStack bukkitItem = new ItemStack(item.getType(), item.getAmount(), item.getDamage());
         world.dropItemNaturally(BukkitUtil.toLocation(world, pt), bukkitItem);
     }
-
+    
     /**
      * Kill mobs in an area.
      * 
@@ -476,32 +488,33 @@ public class BukkitWorld extends LocalWorld {
         boolean killNPCs = (flags & KillFlags.NPCS) != 0;
         boolean killAnimals = (flags & KillFlags.ANIMALS) != 0;
         boolean withLightning = (flags & KillFlags.WITH_LIGHTNING) != 0;
-
+        
         int num = 0;
         double radiusSq = radius * radius;
-
+        
         Location bukkitOrigin = BukkitUtil.toLocation(world, origin);
-
+        
         for (LivingEntity ent : world.getLivingEntities()) {
             if (ent instanceof HumanEntity) {
                 continue;
             }
-
+            
             if (!killAnimals && ent instanceof Animals) {
                 continue;
             }
-
+            
             if (!killPets && ent instanceof Tameable && ((Tameable) ent).isTamed()) {
                 continue; // tamed wolf
             }
-
+            
             try {
                 // Temporary solution until org.bukkit.entity.NPC is widely deployed.
                 if (!killNPCs && Class.forName("org.bukkit.entity.NPC").isAssignableFrom(ent.getClass())) {
                     continue;
                 }
-            } catch (ClassNotFoundException e) {}
-
+            } catch (ClassNotFoundException e) {
+            }
+            
             if (radius < 0 || bukkitOrigin.distanceSquared(ent.getLocation()) <= radiusSq) {
                 if (withLightning) {
                     world.strikeLightningEffect(ent.getLocation());
@@ -510,10 +523,10 @@ public class BukkitWorld extends LocalWorld {
                 ++num;
             }
         }
-
+        
         return num;
     }
-
+    
     /**
      * Remove entities in an area.
      * 
@@ -525,10 +538,9 @@ public class BukkitWorld extends LocalWorld {
     public int removeEntities(EntityType type, Vector origin, int radius) {
         int num = 0;
         double radiusSq = Math.pow(radius, 2);
-
+        
         for (Entity ent : world.getEntities()) {
-            if (radius != -1
-                    && origin.distanceSq(BukkitUtil.toVector(ent.getLocation())) > radiusSq) {
+            if (radius != -1 && origin.distanceSq(BukkitUtil.toVector(ent.getLocation())) > radiusSq) {
                 continue;
             }
             
@@ -569,10 +581,10 @@ public class BukkitWorld extends LocalWorld {
                 }
             }
         }
-
+        
         return num;
     }
-
+    
     /**
      * Set a sign's text.
      * 
@@ -582,9 +594,11 @@ public class BukkitWorld extends LocalWorld {
      */
     private boolean setSignText(Vector pt, String[] text) {
         Block block = world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ());
-        if (block == null) return false;
+        if (block == null)
+            return false;
         BlockState state = block.getState();
-        if (state == null || !(state instanceof Sign)) return false;
+        if (state == null || !(state instanceof Sign))
+            return false;
         Sign sign = (Sign) state;
         sign.setLine(0, text[0]);
         sign.setLine(1, text[1]);
@@ -593,7 +607,7 @@ public class BukkitWorld extends LocalWorld {
         sign.update();
         return true;
     }
-
+    
     /**
      * Get a sign's text.
      * 
@@ -602,22 +616,19 @@ public class BukkitWorld extends LocalWorld {
      */
     private String[] getSignText(Vector pt) {
         Block block = world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ());
-        if (block == null) return new String[] { "", "", "", "" };
+        if (block == null)
+            return new String[] { "", "", "", "" };
         BlockState state = block.getState();
-        if (state == null || !(state instanceof Sign)) return new String[] { "", "", "", "" };
+        if (state == null || !(state instanceof Sign))
+            return new String[] { "", "", "", "" };
         Sign sign = (Sign) state;
         String line0 = sign.getLine(0);
         String line1 = sign.getLine(1);
         String line2 = sign.getLine(2);
         String line3 = sign.getLine(3);
-        return new String[] {
-                line0 != null ? line0 : "",
-                line1 != null ? line1 : "",
-                line2 != null ? line2 : "",
-                line3 != null ? line3 : "",
-            };
+        return new String[] { line0 != null ? line0 : "", line1 != null ? line1 : "", line2 != null ? line2 : "", line3 != null ? line3 : "", };
     }
-
+    
     /**
      * Get a container block's contents.
      * 
@@ -633,30 +644,28 @@ public class BukkitWorld extends LocalWorld {
         if (!(state instanceof org.bukkit.block.ContainerBlock)) {
             return new BaseItemStack[0];
         }
-
+        
         org.bukkit.block.ContainerBlock container = (org.bukkit.block.ContainerBlock) state;
         Inventory inven = container.getInventory();
         int size = inven.getSize();
         BaseItemStack[] contents = new BaseItemStack[size];
-
+        
         for (int i = 0; i < size; ++i) {
             ItemStack bukkitStack = inven.getItem(i);
             if (bukkitStack.getTypeId() > 0) {
-                contents[i] = new BaseItemStack(
-                        bukkitStack.getTypeId(),
-                        bukkitStack.getAmount(),
-                        bukkitStack.getDurability());
+                contents[i] = new BaseItemStack(bukkitStack.getTypeId(), bukkitStack.getAmount(), bukkitStack.getDurability());
                 try {
                     for (Map.Entry<Enchantment, Integer> entry : bukkitStack.getEnchantments().entrySet()) {
                         contents[i].getEnchantments().put(entry.getKey().getId(), entry.getValue());
                     }
-                } catch (Throwable ignore) {}
+                } catch (Throwable ignore) {
+                }
             }
         }
-
+        
         return contents;
     }
-
+    
     /**
      * Set a container block's contents.
      * 
@@ -673,23 +682,20 @@ public class BukkitWorld extends LocalWorld {
         if (!(state instanceof org.bukkit.block.ContainerBlock)) {
             return false;
         }
-
+        
         org.bukkit.block.ContainerBlock chest = (org.bukkit.block.ContainerBlock) state;
         Inventory inven = chest.getInventory();
         int size = inven.getSize();
-
+        
         for (int i = 0; i < size; ++i) {
             if (i >= contents.length) {
                 break;
             }
-
+            
             if (contents[i] != null) {
-                final ItemStack toAdd = new ItemStack(contents[i].getType(),
-                        contents[i].getAmount(),
-                        contents[i].getDamage());
+                final ItemStack toAdd = new ItemStack(contents[i].getType(), contents[i].getAmount(), contents[i].getDamage());
                 try {
                     contents[i].getEnchantments().forEachEntry(new TIntIntProcedure() {
-                        @Override
                         public boolean execute(int key, int value) {
                             Enchantment ench = Enchantment.getById(key);
                             if (ench != null) {
@@ -698,16 +704,17 @@ public class BukkitWorld extends LocalWorld {
                             return true;
                         }
                     });
-                } catch (Throwable ignore) {}
+                } catch (Throwable ignore) {
+                }
                 inven.setItem(i, toAdd);
             } else {
                 inven.setItem(i, null);
             }
         }
-
+        
         return true;
     }
-
+    
     /**
      * Returns whether a block has a valid ID.
      * 
@@ -718,56 +725,56 @@ public class BukkitWorld extends LocalWorld {
     public boolean isValidBlockType(int type) {
         return type <= 255 && Material.getMaterial(type) != null;
     }
-
+    
     @Override
     public void checkLoadedChunk(Vector pt) {
         if (!world.isChunkLoaded(pt.getBlockX() >> 4, pt.getBlockZ() >> 4)) {
             world.loadChunk(pt.getBlockX() >> 4, pt.getBlockZ() >> 4);
         }
     }
-
+    
     @Override
     public boolean equals(Object other) {
         if (!(other instanceof BukkitWorld)) {
             return false;
         }
-
+        
         return ((BukkitWorld) other).world.equals(world);
     }
-
+    
     @Override
     public int hashCode() {
         return world.hashCode();
     }
-
+    
     @Override
     public int getMaxY() {
         return world.getMaxHeight() - 1;
     }
-
+    
     @Override
     public void fixAfterFastMode(Iterable<BlockVector2D> chunks) {
         for (BlockVector2D chunkPos : chunks) {
             world.refreshChunk(chunkPos.getBlockX(), chunkPos.getBlockZ());
         }
     }
-
+    
     private static final Map<Integer, Effect> effects = new HashMap<Integer, Effect>();
     static {
         for (Effect effect : Effect.values()) {
             effects.put(effect.getId(), effect);
         }
     }
-
+    
     @Override
     public boolean playEffect(Vector position, int type, int data) {
         final Effect effect = effects.get(type);
         if (effect == null) {
             return false;
         }
-
+        
         world.playEffect(BukkitUtil.toLocation(world, position), effect, data);
-
+        
         return true;
     }
 }

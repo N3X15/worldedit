@@ -21,6 +21,7 @@ package com.sk89q.worldedit;
 
 import java.util.PriorityQueue;
 import java.util.Random;
+
 import com.sk89q.worldedit.blocks.BaseBlock;
 import com.sk89q.worldedit.blocks.BaseItemStack;
 import com.sk89q.worldedit.blocks.BlockType;
@@ -41,19 +42,19 @@ public abstract class LocalWorld {
         public static final int ANIMALS = 1 << 2;
         public static final int WITH_LIGHTNING = 1 << 20;
     }
-
+    
     /**
      * Random generator.
      */
     protected Random random = new Random();
-
+    
     /**
      * Get the name of the world.
      * 
      * @return
      */
     public abstract String getName();
-
+    
     /**
      * Set block type.
      * 
@@ -62,7 +63,7 @@ public abstract class LocalWorld {
      * @return
      */
     public abstract boolean setBlockType(Vector pt, int type);
-
+    
     /**
      * Set block type.
      * 
@@ -73,7 +74,7 @@ public abstract class LocalWorld {
     public boolean setBlockTypeFast(Vector pt, int type) {
         return setBlockType(pt, type);
     }
-
+    
     /**
      * Get block type.
      * 
@@ -81,16 +82,16 @@ public abstract class LocalWorld {
      * @return
      */
     public abstract int getBlockType(Vector pt);
-
+    
     /**
      * Set block data.
      * 
      * @param pt
      * @param data
      */
-
+    
     public abstract void setBlockData(Vector pt, int data);
-
+    
     /**
      * Set block data.
      * 
@@ -98,7 +99,7 @@ public abstract class LocalWorld {
      * @param data
      */
     public abstract void setBlockDataFast(Vector pt, int data);
-
+    
     /**
      * set block type & data
      * @param pt
@@ -111,20 +112,20 @@ public abstract class LocalWorld {
         setBlockData(pt, data);
         return ret;
     }
-
+    
     /**
      * set block type & data
      * @param pt
      * @param type
      * @param data
-     * @return 
+     * @return
      */
     public boolean setTypeIdAndDataFast(Vector pt, int type, int data) {
         boolean ret = setBlockTypeFast(pt, type);
         setBlockDataFast(pt, data);
         return ret;
     }
-
+    
     /**
      * Get block data.
      * 
@@ -132,7 +133,7 @@ public abstract class LocalWorld {
      * @return
      */
     public abstract int getBlockData(Vector pt);
-
+    
     /**
      * Get block light level.
      * 
@@ -140,7 +141,7 @@ public abstract class LocalWorld {
      * @return
      */
     public abstract int getBlockLightLevel(Vector pt);
-
+    
     /**
      * Regenerate an area.
      * 
@@ -149,7 +150,7 @@ public abstract class LocalWorld {
      * @return
      */
     public abstract boolean regenerate(Region region, EditSession editSession);
-
+    
     /**
      * Attempts to accurately copy a BaseBlock's extra data to the world.
      * 
@@ -158,7 +159,7 @@ public abstract class LocalWorld {
      * @return
      */
     public abstract boolean copyToWorld(Vector pt, BaseBlock block);
-
+    
     /**
      * Attempts to read a BaseBlock's extra data from the world.
      * 
@@ -167,7 +168,7 @@ public abstract class LocalWorld {
      * @return
      */
     public abstract boolean copyFromWorld(Vector pt, BaseBlock block);
-
+    
     /**
      * Clear a chest's contents.
      * 
@@ -175,7 +176,7 @@ public abstract class LocalWorld {
      * @return
      */
     public abstract boolean clearContainerBlockContents(Vector pt);
-
+    
     /**
      * Generate a tree at a location.
      * 
@@ -184,9 +185,8 @@ public abstract class LocalWorld {
      * @return
      * @throws MaxChangedBlocksException
      */
-    public abstract boolean generateTree(EditSession editSession, Vector pt)
-            throws MaxChangedBlocksException;
-
+    public abstract boolean generateTree(EditSession editSession, Vector pt) throws MaxChangedBlocksException;
+    
     /**
      * Generate a big tree at a location.
      * 
@@ -195,9 +195,8 @@ public abstract class LocalWorld {
      * @return
      * @throws MaxChangedBlocksException
      */
-    public abstract boolean generateBigTree(EditSession editSession, Vector pt)
-            throws MaxChangedBlocksException;
-
+    public abstract boolean generateBigTree(EditSession editSession, Vector pt) throws MaxChangedBlocksException;
+    
     /**
      * Generate a birch tree at a location.
      * 
@@ -206,9 +205,8 @@ public abstract class LocalWorld {
      * @return
      * @throws MaxChangedBlocksException
      */
-    public abstract boolean generateBirchTree(EditSession editSession, Vector pt)
-            throws MaxChangedBlocksException;
-
+    public abstract boolean generateBirchTree(EditSession editSession, Vector pt) throws MaxChangedBlocksException;
+    
     /**
      * Generate a redwood tree at a location.
      * 
@@ -217,25 +215,23 @@ public abstract class LocalWorld {
      * @return
      * @throws MaxChangedBlocksException
      */
-    public abstract boolean generateRedwoodTree(EditSession editSession, Vector pt)
-            throws MaxChangedBlocksException;
-
+    public abstract boolean generateRedwoodTree(EditSession editSession, Vector pt) throws MaxChangedBlocksException;
+    
     /**
      * Generate a tall redwood tree at a location.
      * 
-     * @param editSession 
+     * @param editSession
      * @param pt
      * @return
-     * @throws MaxChangedBlocksException 
+     * @throws MaxChangedBlocksException
      */
-    public abstract boolean generateTallRedwoodTree(EditSession editSession, Vector pt)
-            throws MaxChangedBlocksException;
-
+    public abstract boolean generateTallRedwoodTree(EditSession editSession, Vector pt) throws MaxChangedBlocksException;
+    
     /**
      * Drop an item.
      * 
      * @param pt
-     * @param item 
+     * @param item
      * @param times
      */
     public void dropItem(Vector pt, BaseItemStack item, int times) {
@@ -243,7 +239,7 @@ public abstract class LocalWorld {
             dropItem(pt, item);
         }
     }
-
+    
     /**
      * Drop an item.
      * 
@@ -251,7 +247,7 @@ public abstract class LocalWorld {
      * @param item
      */
     public abstract void dropItem(Vector pt, BaseItemStack item);
-
+    
     /**
      * Simulate a block being mined.
      * 
@@ -262,7 +258,7 @@ public abstract class LocalWorld {
         if (stack == null) {
             return;
         }
-
+        
         final int amount = stack.getAmount();
         if (amount > 1) {
             dropItem(pt, new BaseItemStack(stack.getType(), 1, stack.getDamage()), amount);
@@ -270,7 +266,7 @@ public abstract class LocalWorld {
             dropItem(pt, stack, amount);
         }
     }
-
+    
     /**
      * Kill mobs in an area, excluding pet wolves.
      * 
@@ -282,7 +278,7 @@ public abstract class LocalWorld {
     public int killMobs(Vector origin, int radius) {
         return killMobs(origin, radius, false);
     }
-
+    
     /**
      * Kill mobs in an area.
      * 
@@ -295,7 +291,7 @@ public abstract class LocalWorld {
     public int killMobs(Vector origin, int radius, boolean killPets) {
         return killMobs(origin, radius, killPets ? KillFlags.PETS : 0);
     }
-
+    
     /**
      * Kill mobs in an area.
      * 
@@ -307,17 +303,17 @@ public abstract class LocalWorld {
     public int killMobs(Vector origin, double radius, int flags) {
         return killMobs(origin, (int) radius, (flags & KillFlags.PETS) != 0);
     }
-
+    
     /**
      * Remove entities in an area.
      * 
-     * @param type 
+     * @param type
      * @param origin
      * @param radius
      * @return
      */
     public abstract int removeEntities(EntityType type, Vector origin, int radius);
-
+    
     /**
      * Returns whether a block has a valid ID.
      * 
@@ -327,15 +323,15 @@ public abstract class LocalWorld {
     public boolean isValidBlockType(int type) {
         return BlockType.fromID(type) != null;
     }
-
+    
     /**
      * Checks if the chunk pt is in is loaded. if not, loads the chunk
-     *
+     * 
      * @param pt Position to check
      */
     public void checkLoadedChunk(Vector pt) {
     }
-
+    
     /**
      * Compare if the other world is equal.
      * 
@@ -344,7 +340,7 @@ public abstract class LocalWorld {
      */
     @Override
     public abstract boolean equals(Object other);
-
+    
     /**
      * Hash code.
      * 
@@ -352,7 +348,7 @@ public abstract class LocalWorld {
      */
     @Override
     public abstract int hashCode();
-
+    
     /**
      * Get the world's height
      * 
@@ -361,7 +357,7 @@ public abstract class LocalWorld {
     public int getMaxY() {
         return 127;
     }
-
+    
     /**
      * Does some post-processing. Should be called after using fast mode
      * 
@@ -369,13 +365,13 @@ public abstract class LocalWorld {
      */
     public void fixAfterFastMode(Iterable<BlockVector2D> chunks) {
     }
-
+    
     public void fixLighting(Iterable<BlockVector2D> chunks) {
     }
-
+    
     /**
      * Plays the minecraft effect with the given type and data at the given position.
-     *
+     * 
      * @param position
      * @param type
      * @param data
@@ -383,49 +379,51 @@ public abstract class LocalWorld {
     public boolean playEffect(Vector position, int type, int data) {
         return false;
     }
-
+    
     private class QueuedEffect implements Comparable<QueuedEffect> {
         private final Vector position;
         private final int blockId;
         private final double priority;
+        
         public QueuedEffect(Vector position, int blockId, double priority) {
             this.position = position;
             this.blockId = blockId;
             this.priority = priority;
         }
-
+        
         public void play() {
             playEffect(position, 2001, blockId);
         }
-
-        @Override
+        
         public int compareTo(QueuedEffect other) {
             return Double.compare(priority, other.priority);
         }
     }
-
+    
     private final PriorityQueue<QueuedEffect> effectQueue = new PriorityQueue<QueuedEffect>();
     private int taskId = -1;
+    
     public boolean queueBlockBreakEffect(ServerInterface server, Vector position, int blockId, double priority) {
         if (taskId == -1) {
-            taskId = server.schedule(0, 1, new Runnable() { 
+            taskId = server.schedule(0, 1, new Runnable() {
                 public void run() {
                     int max = Math.max(1, Math.min(30, effectQueue.size() / 3));
                     for (int i = 0; i < max; ++i) {
-                        if (effectQueue.isEmpty()) return;
-
+                        if (effectQueue.isEmpty())
+                            return;
+                        
                         effectQueue.poll().play();
                     }
                 }
             });
         }
-
+        
         if (taskId == -1) {
             return false;
         }
-
+        
         effectQueue.offer(new QueuedEffect(position, blockId, priority));
-
+        
         return true;
     }
 }

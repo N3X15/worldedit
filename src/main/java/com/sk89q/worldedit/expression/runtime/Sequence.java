@@ -15,7 +15,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 package com.sk89q.worldedit.expression.runtime;
 
@@ -24,24 +24,22 @@ import java.util.List;
 
 /**
  * A sequence of operations, usually separated by semicolons in the input stream.
- *
+ * 
  * @author TomyLobo
  */
 public class Sequence extends Node {
     final RValue[] sequence;
-
+    
     public Sequence(int position, RValue... sequence) {
         super(position);
-
+        
         this.sequence = sequence;
     }
-
-    @Override
+    
     public char id() {
         return 's';
     }
-
-    @Override
+    
     public double getValue() throws EvaluationException {
         double ret = 0;
         for (RValue invokable : sequence) {
@@ -49,7 +47,7 @@ public class Sequence extends Node {
         }
         return ret;
     }
-
+    
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("seq(");
@@ -61,14 +59,14 @@ public class Sequence extends Node {
             sb.append(invokable);
             first = false;
         }
-
+        
         return sb.append(')').toString();
     }
-
+    
     @Override
     public RValue optimize() throws EvaluationException {
         final List<RValue> newSequence = new ArrayList<RValue>();
-
+        
         RValue droppedLast = null;
         for (RValue invokable : sequence) {
             droppedLast = null;
@@ -83,15 +81,15 @@ public class Sequence extends Node {
                 newSequence.add(invokable);
             }
         }
-
+        
         if (droppedLast != null) {
             newSequence.add(droppedLast);
         }
-
+        
         if (newSequence.size() == 1) {
             return newSequence.get(0);
         }
-
+        
         return new Sequence(getPosition(), newSequence.toArray(new RValue[newSequence.size()]));
     }
 }

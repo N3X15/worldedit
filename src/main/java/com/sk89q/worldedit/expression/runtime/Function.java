@@ -15,7 +15,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 package com.sk89q.worldedit.expression.runtime;
 
@@ -26,31 +26,30 @@ import java.lang.reflect.Method;
 
 /**
  * Wrapper for a Java method and its arguments (other Nodes)
- *
+ * 
  * @author TomyLobo
  */
 public class Function extends Node {
     /**
-     * Add this annotation on functions that don't always return the same value
-     * for the same inputs and on functions with side-effects.
+     * Add this annotation on functions that don't always return the same value for the same inputs and on functions with side-effects.
      */
     @Retention(RetentionPolicy.RUNTIME)
-    public @interface Dynamic { }
-
+    public @interface Dynamic {
+    }
+    
     final Method method;
     final RValue[] args;
-
+    
     Function(int position, Method method, RValue... args) {
         super(position);
         this.method = method;
         this.args = args;
     }
-
-    @Override
+    
     public final double getValue() throws EvaluationException {
         return invokeMethod(method, args);
     }
-
+    
     protected static final double invokeMethod(Method method, Object[] args) throws EvaluationException {
         try {
             return (Double) method.invoke(null, args);
@@ -63,7 +62,7 @@ public class Function extends Node {
             throw new EvaluationException(-1, "Internal error while evaluating expression", e);
         }
     }
-
+    
     @Override
     public String toString() {
         final StringBuilder ret = new StringBuilder(method.getName()).append('(');
@@ -77,12 +76,11 @@ public class Function extends Node {
         }
         return ret.append(')').toString();
     }
-
-    @Override
+    
     public char id() {
         return 'f';
     }
-
+    
     @Override
     public RValue optimize() throws EvaluationException {
         final RValue[] optimizedArgs = new RValue[args.length];
@@ -90,16 +88,16 @@ public class Function extends Node {
         int position = getPosition();
         for (int i = 0; i < args.length; ++i) {
             final RValue optimized = optimizedArgs[i] = args[i].optimize();
-
+            
             if (!(optimized instanceof Constant)) {
                 optimizable = false;
             }
-
+            
             if (optimized.getPosition() < position) {
                 position = optimized.getPosition();
             }
         }
-
+        
         if (optimizable) {
             return new Constant(position, invokeMethod(method, optimizedArgs));
         } else if (this instanceof LValueFunction) {

@@ -15,39 +15,36 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 package com.sk89q.worldedit.expression.runtime;
 
 /**
  * A variable.
- *
+ * 
  * @author TomyLobo
  */
 public final class Variable extends Node implements LValue {
     public double value;
-
+    
     public Variable(double value) {
         super(-1);
         this.value = value;
     }
-
-    @Override
+    
     public double getValue() {
         return value;
     }
-
+    
     @Override
     public String toString() {
         return "var";
     }
-
-    @Override
+    
     public char id() {
         return 'v';
     }
-
-    @Override
+    
     public double assign(double value) {
         return this.value = value;
     }

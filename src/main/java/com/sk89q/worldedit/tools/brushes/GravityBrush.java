@@ -15,9 +15,13 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 package com.sk89q.worldedit.tools.brushes;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.MaxChangedBlocksException;
@@ -25,8 +29,6 @@ import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.blocks.BaseBlock;
 import com.sk89q.worldedit.blocks.BlockID;
 import com.sk89q.worldedit.patterns.Pattern;
-
-import java.util.*;
 
 /**
  * @author zml2008
@@ -37,8 +39,7 @@ public class GravityBrush implements Brush {
     public GravityBrush(boolean fullHeight) {
         this.fullHeight = fullHeight;
     }
-
-    @Override
+    
     public void build(EditSession editSession, Vector pos, Pattern mat, double size) throws MaxChangedBlocksException {
         final BaseBlock air = new BaseBlock(BlockID.AIR, 0);
         final double startY = fullHeight ? editSession.getWorld().getMaxY() : pos.getBlockY() + size;

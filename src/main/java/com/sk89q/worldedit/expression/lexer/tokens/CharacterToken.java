@@ -15,28 +15,27 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 package com.sk89q.worldedit.expression.lexer.tokens;
 
 /**
  * A single character that doesn't fit any of the other token categories.
- *
+ * 
  * @author TomyLobo
  */
 public class CharacterToken extends Token {
     public final char character;
-
+    
     public CharacterToken(int position, char character) {
         super(position);
         this.character = character;
     }
-
-    @Override
+    
     public char id() {
         return character;
     }
-
+    
     @Override
     public String toString() {
         return "CharacterToken(" + character + ")";

@@ -7,7 +7,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.sk89q</groupId>
   <artifactId>worldedit</artifactId>
-  <version>5.2-SNAPSHOT</version>
+  <version>5.2-N3X15-SNAPSHOT</version>
   <name>WorldEdit</name>
   <description>WorldEdit allows for editing the Minecraft SMP world
     en-masse, de-griefing, and fixing issues.</description>
@@ -30,6 +30,10 @@
       <id>bukkit-releases</id>
       <url>http://repo.bukkit.org/content/repositories/releases</url>
     </repository>
+        <repository>
+            <id>nexisonline-repo</id>
+            <url>http://repo.nexisonline.net:8080/nexus/content/groups/public/</url>
+        </repository>
     <repository>
         <id>spout-repo</id>
         <url>http://repo.getspout.org</url>

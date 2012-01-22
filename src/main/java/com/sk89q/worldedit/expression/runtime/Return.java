@@ -15,34 +15,32 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 package com.sk89q.worldedit.expression.runtime;
 
 /**
  * A return statement.
- *
+ * 
  * @author TomyLobo
  */
 public class Return extends Node {
     RValue value;
-
+    
     public Return(int position, RValue value) {
         super(position);
-
+        
         this.value = value;
     }
-
-    @Override
+    
     public double getValue() throws EvaluationException {
         throw new ReturnException(value.getValue());
     }
-
-    @Override
+    
     public char id() {
         return 'r';
     }
-
+    
     @Override
     public String toString() {
         return "return " + value;
